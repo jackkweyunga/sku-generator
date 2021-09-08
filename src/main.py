@@ -1,5 +1,7 @@
 
+import logging
 
+log = logging.Logger('sku-logger')
 
 class SKU:
 
@@ -9,6 +11,7 @@ class SKU:
     # feed options based on importance
     def feed(self, *args):
         sku = ''
+        n = 1
         for i in args:
             i = str(i)
             try:
@@ -16,11 +19,19 @@ class SKU:
                 k = str(i)
             except:
                 k = i[0:3].upper()
-            sku += k
+            if n > 1:
+                sku += f'-{k}'
+            else:
+                sku += k
+            n += 1 
         self.sku = sku
 
     # add on some options in a given skew
     def add(self, *args):
+
+        if self.sku == '':
+            log.exception('sku is empty: feed the generator with options, use SKU().feed(*args)')
+            return
         sku = self.sku
         for i in args:
             i = str(i)
@@ -29,18 +40,9 @@ class SKU:
                 k = str(i)
             except:
                 k = i[0:3].upper()
-            sku += k
+            sku += f'-{k}'
+            
         self.sku = sku
 
     def get_sku(self):
         return self.sku
-
-# example
-
-s = SKU()
-
-s.feed('DRESS','RED','SMALL')
-s.add(1234)
-sku = s.get_sku()
-
-print(sku)
